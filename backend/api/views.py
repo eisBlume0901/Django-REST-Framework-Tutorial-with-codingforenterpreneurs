@@ -4,6 +4,9 @@ from django.http import JsonResponse, HttpResponse
 import json
 from products.models import Product
 from django.forms.models import model_to_dict
+from rest_framework.response import Response
+from rest_framework.decorators import api_view # We are using api_view decorators instead of class-based API views
+from products.serializers import ProductSerializer
 
 #JsonResponse means that the response will be in JSON format.
 # Create your views here.
@@ -36,9 +39,10 @@ from django.forms.models import model_to_dict
 #     return JsonResponse(data)
 # {'name': 'Eisblume', 'job': 'Software Engineer', 'params': <QueryDict: {'company': ['I Azure You']}>, 'headers': {'Content-Length': '48', 'Content-Type': 'application/json', 'Host': 'localhost:8000', 'User-Agent': 'python-requests/2.32.3', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'Connection': 'keep-alive'}, 'content_type': 'application/json'}
 
+@api_view(['GET']) # Adding the HTTP verb restricts the view to only accept GET requests.
 def api_home(request, *args, **kwargs):
-    model_data = Product.objects.all().order_by("?").first() # Get a random product from the database. Question Mark (?) is used to get a random object.
-    data = {}
+    # model_data = Product.objects.all().order_by("?").first() # Get a random product from the database. Question Mark (?) is used to get a random object.
+    # data = {}
     # Instead of manually setting the data dictionary keys and parameters,
     # which is time-consuming and error-prone, we can use serializers
     # to convert the model data into JSON format.
@@ -60,4 +64,15 @@ def api_home(request, *args, **kwargs):
     #     json_data_str = json.dumps(data)
     # return HttpResponse(json_data_str, headers={'Content-Type': 'application/json'}) # This will return the data in JSON format.
 
-    # Version 4 Use a REST Framework
+    # if model_data:
+    #     data = model_to_dict(model_data, fields=['title', 'content', 'price','sale_price']) #Since sale_price was not able to be serialized, we have to manually set it
+    #     data['sale_price'] = model_data.sale_price
+    #     return Response(data)
+
+    # Version 4 Use a Django REST Framework
+    instance = Product.objects.all().order_by("?").first()
+    data = {}
+    if instance:
+        data = ProductSerializer(instance).data
+    return Response(data)
+
