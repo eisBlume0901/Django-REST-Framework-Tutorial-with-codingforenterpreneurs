@@ -37,6 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    'api' #Register the app in the settings.py file.
 ]
 
 MIDDLEWARE = [
