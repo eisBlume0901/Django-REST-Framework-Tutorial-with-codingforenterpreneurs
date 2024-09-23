@@ -12,3 +12,4 @@ class Product(models.Model):
     @property # An attribute of the class that can be access with dot notation. It is treated as an attribute not a method.
     def sale_price(self):
         return "%.2f" %(float(self.price) * 0.9) # 90% of the original price.
+
