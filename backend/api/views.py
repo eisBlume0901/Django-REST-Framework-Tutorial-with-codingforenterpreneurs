@@ -1,6 +1,10 @@
+
 from django.shortcuts import render
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 import json
+from products.models import Product
+from django.forms.models import model_to_dict
+
 #JsonResponse means that the response will be in JSON format.
 # Create your views here.
 
@@ -31,3 +35,29 @@ import json
 #     print(data)
 #     return JsonResponse(data)
 # {'name': 'Eisblume', 'job': 'Software Engineer', 'params': <QueryDict: {'company': ['I Azure You']}>, 'headers': {'Content-Length': '48', 'Content-Type': 'application/json', 'Host': 'localhost:8000', 'User-Agent': 'python-requests/2.32.3', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'Connection': 'keep-alive'}, 'content_type': 'application/json'}
+
+def api_home(request, *args, **kwargs):
+    model_data = Product.objects.all().order_by("?").first() # Get a random product from the database. Question Mark (?) is used to get a random object.
+    data = {}
+    # Instead of manually setting the data dictionary keys and parameters,
+    # which is time-consuming and error-prone, we can use serializers
+    # to convert the model data into JSON format.
+
+    # Version 1
+    # if model_data:
+    #     data['title'] = model_data.title
+    #     data['content'] = model_data.content
+    #     data['price'] = model_data.price
+
+    # Version 2
+    # if model_data:
+    #     data = model_to_dict(model_data, fields=['title', 'content', 'price'])
+    # return JsonResponse(data)
+
+    # Version 3 but this one converts json file into a string
+    # if model_data:
+    #     data = model_to_dict(model_data, fields=['title', 'content', 'price'])
+    #     json_data_str = json.dumps(data)
+    # return HttpResponse(json_data_str, headers={'Content-Type': 'application/json'}) # This will return the data in JSON format.
+
+    # Version 4 Use a REST Framework
