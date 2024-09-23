@@ -29,10 +29,20 @@ import requests
 # print(response3.json()) # Will return a random product from the database in JSON format
 # {'title': 'Instant Pot Multi-Cooker', 'content': 'Cook meals faster with this versatile Instant Pot, combining multiple kitchen appliances into one for pressure cooking, slow cooking, and more.', 'price': 89.99, 'sale_price': '80.99'}
 
-endpoint4 = "http://localhost:8000/api/"
-response4 = requests.get(endpoint4)
-print(response4.status_code) # 200
-print(response4.headers)
-print(response4.json()) # Will return a random product from the database in JSON format
+# endpoint4 = "http://localhost:8000/api/"
+# response4 = requests.get(endpoint4)
+# print(response4.status_code) # 200
+# print(response4.headers)
+# print(response4.json()) # Will return a random product from the database in JSON format
 # {'title': 'Instant Pot Multi-Cooker', 'content': 'Cook meals faster with this versatile Instant Pot, combining multiple kitchen appliances into one for pressure cooking, slow cooking, and more.', 'price': '89.99', 'sale_price': '80.99'}
 # Our serializer was able to serialize the data along with the sale_price field.
+
+endpoint5 = "http://localhost:8000/api/add_product/"
+response5 = requests.post(endpoint5, data={
+    "title": "Wireless Charging Pad",
+    "content": "Charge your smartphone effortlessly with this sleek wireless charging pad, compatible with most devices",
+    "price": 29.99}) # W
+print(response5.status_code) # 201
+print(response5.headers)
+print(response5.json()) # Will return the newly created product in JSON format
+# {'title': 'Wireless Charging Pad', 'content': 'Charge your smartphone effortlessly with this sleek wireless charging pad, compatible with most devices', 'price': '29.99'}

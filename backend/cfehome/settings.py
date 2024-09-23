@@ -38,8 +38,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    'products',
     'api',
+    'products',
+    'rest_framework', # This creates a web page for API requests, no need to create class-based API views
 ]
 
 MIDDLEWARE = [

@@ -76,3 +76,13 @@ def api_home(request, *args, **kwargs):
         data = ProductSerializer(instance).data
     return Response(data)
 
+
+@api_view(['POST'])
+def api_product_create(request, *args, **kwargs):
+    serializer = ProductSerializer(data=request.data) #validates the data before saving it to the database
+    if serializer.is_valid():
+        # print(serializer.data) # For debugging
+        # To save the serialized data to the database
+        instance = serializer.save()
+        return Response(serializer.data, status=201)
+    return Response({"invalid": "Some data is missing or invalid"}, status=400) # 400 means that the request is invalid
