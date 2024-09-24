@@ -10,3 +10,9 @@ class ProductDetailAPIView(generics.RetrieveAPIView):
     # def get_queryset(self):
     #     return Products.objects.filter(id=self.kwargs['id'])
 
+product_detail_view = ProductDetailAPIView.as_view()
+class ProductCreateAPIView(generics.ListCreateAPIView):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+
+product_create_view = ProductCreateAPIView.as_view()
