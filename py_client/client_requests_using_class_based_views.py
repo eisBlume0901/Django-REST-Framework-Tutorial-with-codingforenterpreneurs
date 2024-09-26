@@ -18,3 +18,8 @@ print(response1.json()) # Must retrieve
 # print(response2.status_code) # 201
 # print(response2.json()) # Must retrieve
 # {'title': 'Smart LED Light Bulb', 'content': 'Control your lighting with this energy-efficient smart LED bulb. Compatible with voice assistants and mobile apps.', 'price': '19.99'}
+
+endpoint3 = "http://localhost:8000/api/products/create" # List all products since ListCreateAPIView is used (get and post)
+response3 = requests.get(endpoint3)
+print(response3.status_code) # 200
+print(response3.json()) # Retrieves all products in the database
