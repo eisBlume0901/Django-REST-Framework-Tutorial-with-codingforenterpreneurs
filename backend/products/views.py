@@ -1,6 +1,9 @@
 from rest_framework import generics # Using class based views instead of using api_view decorator methods
 from .models import Product
 from .serializers import ProductSerializer
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from django.shortcuts import get_object_or_404 # This is used to get a single object from the database and return a 404 error if the object does not exist
 
 # Types of API Views
 # 1. ListAPIView - To list all the objects in the database
@@ -42,3 +45,35 @@ class ProductListCreateAPIView(generics.ListCreateAPIView):
         # We can use the post_save signal to trigger the function
 
 product_list_create_view = ProductListCreateAPIView.as_view()
+
+# Method-based API views
+@api_view(['GET', 'POST'])
+def product_alt_view(request, pk=None, *args, **kwargs):
+    method = request.method
+    if method == "GET":
+        # Retrieve a specific product or list all products
+        # Detail View
+        # Can use .filter(), .get(), or .get_object_or_404() to get a single object
+        # Can Also use Response or Http404 to return the data
+        if pk is not None:
+            product = get_object_or_404(Product, pk=pk)
+            data = ProductSerializer(product).data # You can explicitly declare many = False but it is not necessary
+            return Response(data, status=200)
+        else:
+        # List View
+            queryset = Product.objects.all()
+            data = ProductSerializer(queryset, many=True).data # many = true means that we are serializing multiple objects
+            return Response(data, status=200)
+    if method == "POST":
+        # Create a product
+        serializer = ProductSerializer(data=request.data) # This is to validate the data
+        if serializer.is_valid(raise_exception=True): # This is to raise an exception if the data is invalid
+            title = serializer.validated_data.get('title')
+            content = serializer.validated_data.get('content') or None
+            if content is None:
+                content = None
+            price = serializer.validated_data.get('price')
+            product = Product.objects.create(title=title, content=content, price=price)
+            data = ProductSerializer(product).data
+            return Response(data, status=201)
+
