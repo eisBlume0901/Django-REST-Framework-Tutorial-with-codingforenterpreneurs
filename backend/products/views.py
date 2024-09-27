@@ -95,4 +95,9 @@ class ProductDeleteAPIView(generics.DestroyAPIView):
     serializer_class = ProductSerializer
     lookup_field = 'pk'
 
+    # Note: Only override perform_update, perform_destroy, perform_create for customization because
+    # It can work without overriding these methods
+    def perform_destroy(self, instance): # Why instance not serializer? Because we are deleting the object not updating it
+        instance.delete()
+
 product_delete_view = ProductDeleteAPIView.as_view()
