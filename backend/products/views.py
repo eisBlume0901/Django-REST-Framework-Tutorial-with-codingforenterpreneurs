@@ -77,3 +77,22 @@ def product_alt_view(request, pk=None, *args, **kwargs):
             data = ProductSerializer(product).data
             return Response(data, status=201)
 
+
+class ProductUpdateAPIView(generics.UpdateAPIView):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+    lookup_field = 'pk'
+
+    def perform_update(self, serializer):
+        instance = serializer.save()
+        if not instance.content: # If the content is empty, set it to None
+            instance.content = None
+
+product_update_view = ProductUpdateAPIView.as_view()
+
+class ProductDeleteAPIView(generics.DestroyAPIView):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+    lookup_field = 'pk'
+
+product_delete_view = ProductDeleteAPIView.as_view()
