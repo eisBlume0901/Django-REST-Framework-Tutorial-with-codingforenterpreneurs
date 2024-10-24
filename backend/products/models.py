@@ -13,3 +13,5 @@ class Product(models.Model):
     def sale_price(self):
         return "%.2f" %(float(self.price) * 0.9) # 90% of the original price.
 
+    def get_discount_of_ten_percent(self):
+        return "%.2f" %(float(self.price) * 0.1) # 10% of the original price.
