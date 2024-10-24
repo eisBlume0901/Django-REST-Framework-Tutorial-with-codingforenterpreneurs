@@ -1,11 +1,11 @@
-from rest_framework import generics # Using class based views instead of using api_view decorator methods
+from rest_framework import generics, mixins # Using class based views instead of using api_view decorator methods
 from .models import Product
 from .serializers import ProductSerializer
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404 # This is used to get a single object from the database and return a 404 error if the object does not exist
 
-# Types of API Views
+# Types of Class-based API Views
 # 1. ListAPIView - To list all the objects in the database
 # 2. RetrieveAPIView - To retrieve a single object from the database
 # 3. CreateAPIView - To create a new object in the database
@@ -101,3 +101,26 @@ class ProductDeleteAPIView(generics.DestroyAPIView):
         instance.delete()
 
 product_delete_view = ProductDeleteAPIView.as_view()
+
+# Types of Mixins
+# 1. CreateModelMixin - To create a new object in the database
+# 2. ListModelMixin - To list all the objects in the database
+# 3. RetrieveModelMixin - To retrieve a single object from the database
+# 4. UpdateModelMixin - To update an object in the database
+# 5. DestroyModelMixin - To delete an object from the database
+# 6. ListCreateModelMixin - To list all the objects in the database and create a new object in the database
+# 7. RetrieveUpdateModelMixin - To retrieve a single object from the database and update the object
+# 8. RetrieveDestroyModelMixin - To retrieve a single object from the database and delete the object
+# 9. RetrieveUpdateDestroyModelMixin - To retrieve a single object from the database, update the object, and delete the object
+class ProductMixinView(mixins.ListModelMixin, generics.GenericAPIView, mixins.RetrieveModelMixin): # Mixins is for customizing the API views
+    # Compared to ListAPIView, we can customize the get method
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+    lookup_field = 'pk' # Use it with RetrieveModelMixin
+
+    def get(self, request, *args, **kwargs): # HTTP GET request (returns a list of product objects)
+        print(args, kwargs)
+        return self.list(request, *args, **kwargs)
+
+
+product_mixin_view = ProductMixinView.as_view()

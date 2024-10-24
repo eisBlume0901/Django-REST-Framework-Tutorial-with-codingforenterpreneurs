@@ -48,3 +48,5 @@ print(response1.json()) # Must retrieve
 # endpoint6 = "http://localhost:8000/api/products/14/delete/" # Deleted the product with existing primary key 14 using DeleteAPIView
 # response6 = requests.delete(endpoint6)
 # print(response6.status_code)
+
+endpoint7 = "http://localhost:8000/api/products/15/delete/" 
