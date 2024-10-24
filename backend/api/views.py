@@ -83,6 +83,9 @@ def api_product_create(request, *args, **kwargs):
     if serializer.is_valid():
         # print(serializer.data) # For debugging
         # To save the serialized data to the database
-        instance = serializer.save()
-        return Response(serializer.data, status=201)
+        instance = serializer.save() # creates a new instance of the Product model (or updates an existing one, depending on the data) and saves it to the database since we know
+        # that the model is connected to the database
+        data = ProductSerializer(instance).data # Convert the instance object into JSON format so that it can be used by other applications
+        return Response(data, status=201) # 201 means that the request was successful and a new resource was created
     return Response({"invalid": "Some data is missing or invalid"}, status=400) # 400 means that the request is invalid
+    # Response is useful as it sets error message with the key "invalid" and a status code of 400 if the data is invalid

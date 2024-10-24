@@ -21,7 +21,12 @@ class ProductSerializer(serializers.ModelSerializer):
 
     # The method name must be the same as the field name that was created get_<field_name>
     def get_discount(self, obj):
-        return obj.get_discount_of_ten_percent() # This is a method from the Product model
+        if not hasattr(obj, 'id'): # Meaning if the object does not have an id or non-existent, then it will return none.
+            return None
+        # Another alternative
+        if not isinstance(obj, Product): # If the object is not an instance of the Product model, then it will return none.
+            return None
+        return obj.get_discount_of_ten_percent()  # This is a method from the Product model
 
     # Using SerializerMethodField with read_only=True is useful
     # 1. Customization: allowing to define custom logic for field's value that is either a model or a serializer field
