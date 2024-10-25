@@ -80,7 +80,7 @@ def api_home(request, *args, **kwargs):
 @api_view(['POST'])
 def api_product_create(request, *args, **kwargs):
     serializer = ProductSerializer(data=request.data) #validates the data before saving it to the database
-    if serializer.is_valid():
+    if serializer.is_valid(): # raise_exception=True is useful when we want to notify the user that the data is invalid
         # print(serializer.data) # For debugging
         # To save the serialized data to the database
         instance = serializer.save() # creates a new instance of the Product model (or updates an existing one, depending on the data) and saves it to the database since we know
