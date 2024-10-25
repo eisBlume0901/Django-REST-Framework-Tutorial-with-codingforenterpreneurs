@@ -19,5 +19,7 @@ from django.urls import path, include
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('api.urls')), #Include the urls.py file of the api app.
-    path('api/products/', include('products.urls')), #Include the urls.py file of the products app. Can also be put under api/urls.py for maintainability.
+    path('api/products/', include('products.urls')),
+    #Include the urls.py file of the products app. Can also be put under api/urls.py so that we can only associate it with the api app.
+
 ]

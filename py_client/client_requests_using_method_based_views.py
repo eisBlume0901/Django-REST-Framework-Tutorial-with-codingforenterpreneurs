@@ -48,13 +48,13 @@ import requests
 # {'title': 'Wireless Charging Pad', 'content': 'Charge your smartphone effortlessly with this sleek wireless charging pad, compatible with most devices', 'price': '29.99'}
 
 
-endpoint6 = "http://localhost:8000/api/add_product/"
-response6 = requests.post(endpoint6, data={
-    "title": ": SwiftPulse 3000",
-    "content": "A sleek, powerful wireless charging pad with built-in cooling technology.",
-    "price": "kjfadkfjadf"}) #
-
-if response6.status_code in range(400, 499):
-    error_data = response6.json()
-    invalid_message = error_data.get("invalid")
-    print(invalid_message)
+# endpoint6 = "http://localhost:8000/api/add_product/"
+# response6 = requests.post(endpoint6, data={
+#     "title": ": SwiftPulse 3000",
+#     "content": "A sleek, powerful wireless charging pad with built-in cooling technology.",
+#     "price": "kjfadkfjadf"}) #
+#
+# if response6.status_code in range(400, 499):
+#     error_data = response6.json()
+#     invalid_message = error_data.get("invalid")
+#     print(invalid_message)

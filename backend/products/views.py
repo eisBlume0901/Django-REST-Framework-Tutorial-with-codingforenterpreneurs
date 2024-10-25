@@ -1,4 +1,6 @@
 from rest_framework import generics, mixins # Using class based views instead of using api_view decorator methods
+from rest_framework.status import HTTP_400_BAD_REQUEST, HTTP_201_CREATED, HTTP_200_OK
+
 from .models import Product
 from .serializers import ProductSerializer
 from rest_framework.decorators import api_view
@@ -31,18 +33,32 @@ class ProductListCreateAPIView(generics.ListCreateAPIView):
 
     def perform_create(self, serializer): # To customize the save or create method, you can override the perform_create method
         # serializer.save(user=self.request.user) # This is to join the user to the product (this is a customized one)
-        print(serializer.validated_data)
-        print(f"title: {serializer.validated_data.get('title')}")
+        title = serializer.validated_data.get('title')
         content = serializer.validated_data.get('content')
-        if content is None:
-            print(f"content: {serializer.validated_data.get('content')}")
-        else:
-            print(f"content: {content}")
-        print(f"price: {serializer.validated_data.get('price')}")
-        serializer.save()
+        if content is None or content == "":
+            content = "No description available"
+        price = serializer.validated_data.get('price')
+
+        # Through serializer.save()
+        serializer.save(title=title, content=content, price=price)
+
         # Django Signals - A way to trigger a function when a certain event occurs in mysql it is called triggers
         # For example, when a new product is created, we can send an email to the user who created the product
         # We can use the post_save signal to trigger the function
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        if serializer.is_valid():
+            self.perform_create(serializer) # This is to customize the data before saving it to the database (we called our perform_create method)
+            response = Response(serializer.data, status=HTTP_201_CREATED)
+            response.data['message'] = "Product created successfully"
+        else:
+            response = Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
+            response.data = {'message': 'Some data is invalid. Please try again', 'errors': serializer.errors}
+        return response
+
+    # perform_create is for customizing the data before saving it to the database
+    # create is for customizing the response after saving the data to the database
 
 product_list_create_view = ProductListCreateAPIView.as_view()
 
@@ -70,7 +86,7 @@ def product_alt_view(request, pk=None, *args, **kwargs):
         if serializer.is_valid(raise_exception=True): # This is to raise an exception if the data is invalid
             title = serializer.validated_data.get('title')
             content = serializer.validated_data.get('content') or None
-            if content is None:
+            if content is None or content == "":
                 content = None
             price = serializer.validated_data.get('price')
             product = Product.objects.create(title=title, content=content, price=price)
@@ -84,9 +100,27 @@ class ProductUpdateAPIView(generics.UpdateAPIView):
     lookup_field = 'pk'
 
     def perform_update(self, serializer):
-        instance = serializer.save()
-        if not instance.content: # If the content is empty, set it to None
-            instance.content = None
+        title = serializer.validated_data.get('title')
+        content = serializer.validated_data.get('content')
+
+        if content is None or content == "":
+            content = "No description available"
+
+        price = serializer.validated_data.get('price')
+        serializer.save(title=title, content=content, price=price)
+
+    def update(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data)
+        if serializer.is_valid():
+            self.perform_update(serializer)
+            response = Response(serializer.data, status=HTTP_200_OK)
+            response.data['message'] = "Product updated successfully"
+        else:
+            response = Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
+            response.data = {'message': 'Some data is invalid. Please try again', 'errors': serializer.errors}
+        return response
+
 
 product_update_view = ProductUpdateAPIView.as_view()
 
@@ -99,6 +133,12 @@ class ProductDeleteAPIView(generics.DestroyAPIView):
     # It can work without overriding these methods
     def perform_destroy(self, instance): # Why instance not serializer? Because we are deleting the object not updating it
         instance.delete()
+
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        self.perform_destroy(instance)
+        response = Response({'message': 'Product deleted successfully'}, status=HTTP_200_OK)
+        return response
 
 product_delete_view = ProductDeleteAPIView.as_view()
 
